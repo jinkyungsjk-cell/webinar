@@ -459,23 +459,16 @@ async function submitForm() {
   document.getElementById('btn-spinner').style.display = 'block';
   btn.disabled = true;
 
-  try {
-    const res = await sbPost({ org, region, name, lang: lang.toUpperCase() });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(body.message || 'error');
-    }
-    lastSubmit = { org, region, name };
-    document.getElementById('form-body').style.display = 'none';
-    document.getElementById('success-body').style.display = 'flex';
-  } catch (e) {
-    err.textContent = t.err_server + (e.message ? ` (${e.message})` : '');
-    err.style.display = 'block';
-  } finally {
-    document.getElementById('btn-text').style.display = 'block';
-    document.getElementById('btn-spinner').style.display = 'none';
-    btn.disabled = false;
-  }
+  // ICS는 Supabase 저장과 무관하게 무조건 진행
+  lastSubmit = { org, region, name };
+  document.getElementById("form-body").style.display = "none";
+  document.getElementById("success-body").style.display = "flex";
+  document.getElementById("btn-text").style.display = "block";
+  document.getElementById("btn-spinner").style.display = "none";
+  btn.disabled = false;
+
+  // Supabase 저장은 백그라운드에서 조용히 시도
+  sbPost({ org, region, name, lang: lang.toUpperCase() }).catch(() => {});
 }
 
 // ── ICS 다운로드 ──
