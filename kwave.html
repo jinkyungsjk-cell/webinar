@@ -1,418 +1,200 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>웨비나 참가 신청 / Webinar Registration</title>
+<title>Webinar Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ink: #1a1a2e;
-    --ink2: #4a4a6a;
-    --ink3: #8888aa;
-    --paper: #f7f6f2;
-    --card: #ffffff;
-    --accent: #2d5a8e;
-    --accent2: #e8b84b;
-    --border: rgba(26,26,46,0.1);
-    --border2: rgba(26,26,46,0.06);
-    --success: #1a7a4a;
-    --success-bg: #edf7f1;
-    --danger: #c0392b;
-    --danger-bg: #fdf0ee;
-    --radius: 16px;
-    --shadow: 0 2px 24px rgba(26,26,46,0.08);
+    --ink: #1a1a2e; --ink2: #4a4a6a; --ink3: #8888aa;
+    --paper: #f7f6f2; --card: #ffffff;
+    --accent: #2d5a8e; --accent2: #e8b84b;
+    --border: rgba(26,26,46,0.1); --border2: rgba(26,26,46,0.06);
+    --success: #1a7a4a; --success-bg: #edf7f1;
+    --danger: #c0392b; --danger-bg: #fdf0ee;
+    --radius: 16px; --shadow: 0 2px 24px rgba(26,26,46,0.08);
   }
-
   html { scroll-behavior: smooth; }
-
   body {
-    font-family: 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 3rem 1rem 4rem;
+    font-family: 'Noto Sans KR','Noto Sans JP','Noto Sans SC',sans-serif;
+    background: var(--paper); color: var(--ink);
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; padding: 3rem 1rem 4rem;
   }
-
-  /* ── Header ── */
   .site-header {
-    width: 100%;
-    max-width: 560px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    width: 100%; max-width: 560px;
+    display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 2.5rem;
   }
-
   .logo {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--ink);
-    letter-spacing: -0.3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-family: 'Fraunces',Georgia,serif; font-size: 18px;
+    font-weight: 300; color: var(--ink); letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 8px;
   }
-
-  .logo-dot {
-    width: 8px; height: 8px;
-    background: var(--accent2);
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  /* ── Language switcher ── */
-  .lang-bar {
-    display: flex;
-    gap: 4px;
-  }
-
+  .logo-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; display: inline-block; }
+  .lang-bar { display: flex; gap: 4px; }
   .lang-btn {
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    padding: 5px 11px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--ink3);
-    cursor: pointer;
+    font-family: inherit; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.04em; padding: 5px 11px;
+    border: 1px solid var(--border); border-radius: 20px;
+    background: transparent; color: var(--ink3); cursor: pointer;
     transition: all .18s ease;
   }
-
   .lang-btn:hover { color: var(--ink); border-color: var(--ink2); }
-  .lang-btn.active {
-    background: var(--ink);
-    color: #fff;
-    border-color: var(--ink);
-  }
-
-  /* ── Main card ── */
+  .lang-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
   .card {
-    width: 100%;
-    max-width: 560px;
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border2);
-    overflow: hidden;
+    width: 100%; max-width: 560px; background: var(--card);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--border2); overflow: hidden;
   }
-
   .card-top {
-    padding: 2.25rem 2.25rem 2rem;
-    border-bottom: 1px solid var(--border2);
+    padding: 2.25rem 2.25rem 2rem; border-bottom: 1px solid var(--border2);
     position: relative;
   }
-
   .card-top::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
   }
-
   .card-top h1 {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--ink);
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    font-family: 'Fraunces',Georgia,serif; font-size: 26px;
+    font-weight: 300; color: var(--ink); letter-spacing: -0.5px;
+    margin-bottom: 8px; line-height: 1.2;
   }
+  .card-top p { font-size: 13.5px; color: var(--ink2); line-height: 1.65; }
 
-  .card-top p {
-    font-size: 13.5px;
-    color: var(--ink2);
-    line-height: 1.65;
+  /* Session info box */
+  .session-info {
+    margin-top: 1.25rem; padding: 1rem 1.25rem;
+    background: var(--paper); border-radius: 10px;
+    border: 1px solid var(--border2); font-size: 13px; color: var(--ink2);
+    line-height: 1.75;
   }
+  .session-info strong { color: var(--ink); font-weight: 500; }
 
-  /* ── Form ── */
   .card-body { padding: 2rem 2.25rem; }
-
   .field { margin-bottom: 1.35rem; }
-
   .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink3);
-    margin-bottom: 8px;
+    display: block; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink3); margin-bottom: 8px;
   }
-
   .req { color: var(--accent2); margin-left: 2px; }
-
   .field input {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 15px;
-    font-family: inherit;
-    background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--ink);
-    outline: none;
+    width: 100%; padding: 12px 15px; font-size: 15px; font-family: inherit;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--ink); outline: none;
     transition: border-color .18s, box-shadow .18s;
   }
-
   .field input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(45,90,142,0.1);
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,142,0.1);
     background: #fff;
   }
-
   .field input::placeholder { color: var(--ink3); }
-
+  .field .hint { font-size: 12px; color: var(--ink3); margin-top: 6px; line-height: 1.5; }
   .err-box {
-    display: none;
-    font-size: 13px;
-    color: var(--danger);
-    background: var(--danger-bg);
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 1rem;
+    display: none; font-size: 13px; color: var(--danger);
+    background: var(--danger-bg); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 1rem;
   }
-
   .submit-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: inherit;
-    letter-spacing: 0.05em;
-    background: var(--ink);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
+    width: 100%; padding: 14px; font-size: 14px; font-weight: 500;
+    font-family: inherit; letter-spacing: 0.05em;
+    background: var(--ink); color: #fff; border: none;
+    border-radius: 10px; cursor: pointer;
     transition: background .18s, transform .1s;
-    position: relative;
-    overflow: hidden;
   }
-
   .submit-btn:hover { background: var(--accent); }
   .submit-btn:active { transform: scale(0.99); }
   .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
-
   .spinner {
-    display: none;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-    margin: 0 auto;
+    display: none; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── Success ── */
+  /* Success panel */
   .success-panel {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 3rem 2rem;
+    display: none; flex-direction: column; align-items: center;
+    text-align: center; padding: 3rem 2rem;
   }
-
   .success-icon {
-    width: 68px; height: 68px;
-    border-radius: 50%;
-    background: var(--success-bg);
-    color: var(--success);
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--success-bg); color: var(--success);
     display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    margin-bottom: 1.5rem;
+    font-size: 30px; margin-bottom: 1.5rem;
     animation: pop .4s cubic-bezier(0.175,0.885,0.32,1.275);
   }
-
-  @keyframes pop {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
+  @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .success-panel h2 {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 24px;
-    font-weight: 300;
-    color: var(--ink);
-    margin-bottom: 10px;
-    letter-spacing: -0.3px;
+    font-family: 'Fraunces',Georgia,serif; font-size: 24px;
+    font-weight: 300; color: var(--ink); margin-bottom: 10px; letter-spacing: -0.3px;
   }
-
-  .success-panel p {
-    font-size: 14px;
-    color: var(--ink2);
-    line-height: 1.65;
-    max-width: 300px;
+  .success-panel p { font-size: 14px; color: var(--ink2); line-height: 1.65; max-width: 300px; }
+  .dl-ics-btn {
+    margin-top: 1.5rem; padding: 12px 28px;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 10px; cursor: pointer; transition: background .18s;
   }
-
+  .dl-ics-btn:hover { background: #1e3f6b; }
   .reset-btn {
-    margin-top: 1.75rem;
-    font-size: 13px;
-    color: var(--accent);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 7px 18px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all .18s;
+    margin-top: .75rem; font-size: 13px; color: var(--ink3);
+    background: none; border: none; cursor: pointer; font-family: inherit;
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: color .18s;
   }
+  .reset-btn:hover { color: var(--ink); }
 
-  .reset-btn:hover { border-color: var(--accent); background: rgba(45,90,142,0.05); }
-
-  /* ── Admin panel ── */
-  #admin-panel {
-    display: none;
-    width: 100%;
-    max-width: 900px;
-  }
-
+  /* Admin */
+  #admin-panel { display: none; width: 100%; max-width: 900px; }
   .admin-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-    gap: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;
   }
-
-  .admin-title {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--ink);
-  }
-
+  .admin-title { font-family: 'Fraunces',Georgia,serif; font-size: 22px; font-weight: 300; color: var(--ink); }
   .admin-actions { display: flex; gap: 8px; align-items: center; }
-
-  .count-badge {
-    font-size: 12px;
-    background: var(--ink);
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 20px;
+  .count-badge { font-size: 12px; background: var(--ink); color: #fff; padding: 4px 12px; border-radius: 20px; }
+  .admin-dl-btn {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 18px; background: var(--accent2); color: var(--ink);
+    border: none; border-radius: 8px; cursor: pointer; transition: opacity .18s;
   }
-
-  .dl-btn {
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 18px;
-    background: var(--accent2);
-    color: var(--ink);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity .18s;
-  }
-
-  .dl-btn:hover { opacity: .85; }
-
+  .admin-dl-btn:hover { opacity: .85; }
   .refresh-btn {
-    font-family: inherit;
-    font-size: 13px;
-    padding: 8px 14px;
-    background: transparent;
-    color: var(--ink2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all .18s;
+    font-family: inherit; font-size: 13px; padding: 8px 14px;
+    background: transparent; color: var(--ink2);
+    border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all .18s;
   }
-
   .refresh-btn:hover { border-color: var(--ink2); color: var(--ink); }
-
   .admin-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border2);
-    overflow: hidden;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); border: 1px solid var(--border2); overflow: hidden;
   }
-
   .table-wrap { overflow-x: auto; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-  }
-
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   thead th {
-    text-align: left;
-    padding: 14px 18px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink3);
-    background: var(--paper);
-    border-bottom: 1px solid var(--border);
+    text-align: left; padding: 14px 18px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink3); background: var(--paper); border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
-
-  tbody td {
-    padding: 13px 18px;
-    border-bottom: 1px solid var(--border2);
-    color: var(--ink);
-    vertical-align: middle;
-  }
-
+  tbody td { padding: 13px 18px; border-bottom: 1px solid var(--border2); color: var(--ink); vertical-align: middle; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: rgba(45,90,142,0.03); }
-
   .lang-pill {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--paper);
-    color: var(--ink2);
-    border: 1px solid var(--border);
+    font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+    padding: 3px 8px; border-radius: 20px;
+    background: var(--paper); color: var(--ink2); border: 1px solid var(--border);
   }
-
-  .link-cell {
-    color: var(--accent);
-    font-size: 12px;
-    word-break: break-all;
-    max-width: 220px;
-  }
-
-  .no-data {
-    text-align: center;
-    padding: 3rem;
-    color: var(--ink3);
-    font-size: 14px;
-  }
-
-  .loading-row td {
-    text-align: center;
-    color: var(--ink3);
-    padding: 2.5rem;
-    font-size: 14px;
-  }
-
+  .no-data { text-align: center; padding: 3rem; color: var(--ink3); font-size: 14px; }
+  .loading-row td { text-align: center; color: var(--ink3); padding: 2.5rem; font-size: 14px; }
   .time-cell { color: var(--ink3); font-size: 12px; white-space: nowrap; }
-
-  /* ── Form/Admin toggle ── */
   .main-wrap { width: 100%; max-width: 560px; }
-
-  /* ── Responsive ── */
   @media (max-width: 600px) {
     body { padding: 1.5rem .75rem 3rem; }
     .card-top, .card-body { padding-left: 1.5rem; padding-right: 1.5rem; }
@@ -423,10 +205,7 @@
 <body>
 
 <header class="site-header">
-  <div class="logo">
-    <span class="logo-dot"></span>
-    Webinar
-  </div>
+  <div class="logo"><span class="logo-dot"></span>Webinar</div>
   <nav class="lang-bar">
     <button class="lang-btn active" onclick="setLang('en')">English</button>
     <button class="lang-btn" onclick="setLang('ko')">한국어</button>
@@ -435,51 +214,56 @@
   </nav>
 </header>
 
-<!-- ── 신청 폼 ── -->
 <div class="main-wrap" id="form-wrap">
   <div class="card">
     <div class="card-top">
-      <h1 id="t-title">웨비나 참가 신청</h1>
-      <p id="t-subtitle">아래 정보를 입력하시면 신청이 완료됩니다.</p>
+      <h1 id="t-title">Webinar Registration</h1>
+      <p id="t-subtitle">Register below to add this session to your Outlook calendar.</p>
+      <div class="session-info" id="t-session-info">
+        <strong id="t-si-label">Session Details</strong><br>
+        <span id="t-si-content">📅 June 9, 2026 · 11:00 PM – 12:00 AM (KST)<br>🌐 Conducted in English</span>
+      </div>
     </div>
 
     <div id="form-body" class="card-body">
       <div class="field">
-        <label id="t-org">소속 <span class="req">*</span></label>
+        <label id="t-org">Company <span class="req">*</span></label>
         <input type="text" id="org" autocomplete="organization" />
       </div>
       <div class="field">
-        <label id="t-name">이름 <span class="req">*</span></label>
-        <input type="text" id="name" autocomplete="name" />
+        <label id="t-region">Country Team <span class="req">*</span></label>
+        <input type="text" id="region" />
+        <div class="hint" id="t-region-hint">e.g. Korea Team, Japan Team, China Team</div>
       </div>
       <div class="field">
-        <label id="t-link">초대 링크 <span class="req">*</span></label>
-        <input type="url" id="link" />
+        <label id="t-name">Name <span class="req">*</span></label>
+        <input type="text" id="name" autocomplete="name" />
       </div>
       <div class="err-box" id="err-msg"></div>
       <button class="submit-btn" id="submit-btn" onclick="submitForm()">
-        <span id="btn-text">신청 완료</span>
+        <span id="btn-text">Add to Calendar</span>
         <div class="spinner" id="btn-spinner"></div>
       </button>
     </div>
 
     <div id="success-body" class="success-panel">
       <div class="success-icon">✓</div>
-      <h2 id="t-done">신청되셨습니다!</h2>
-      <p id="t-done-sub">참가 신청이 정상적으로 접수되었습니다. 감사합니다.</p>
-      <button class="reset-btn" id="t-reset" onclick="resetForm()">다른 분 신청하기</button>
+      <h2 id="t-done">You're registered!</h2>
+      <p id="t-done-sub">Click below to download your calendar file and open it in Outlook.</p>
+      <button class="dl-ics-btn" id="dl-ics-btn" onclick="downloadICS()">⬇ Download Calendar File (.ics)</button>
+      <button class="reset-btn" id="t-reset" onclick="resetForm()">Register another person</button>
     </div>
   </div>
 </div>
 
-<!-- ── 관리자 패널 ── -->
+<!-- Admin panel -->
 <div id="admin-panel">
   <div class="admin-header">
-    <h2 class="admin-title">신청자 명단</h2>
+    <h2 class="admin-title">Registrants</h2>
     <div class="admin-actions">
-      <span class="count-badge" id="admin-count">0명</span>
-      <button class="refresh-btn" onclick="loadRegistrants()">↻ 새로고침</button>
-      <button class="dl-btn" onclick="downloadExcel()">⬇ 엑셀 다운로드</button>
+      <span class="count-badge" id="admin-count">0</span>
+      <button class="refresh-btn" onclick="loadRegistrants()">↻ Refresh</button>
+      <button class="admin-dl-btn" onclick="downloadExcel()">⬇ Export Excel</button>
     </div>
   </div>
   <div class="admin-card">
@@ -488,15 +272,15 @@
         <thead>
           <tr>
             <th>#</th>
-            <th id="ah-org">소속</th>
-            <th id="ah-name">이름</th>
-            <th id="ah-link">초대 링크</th>
-            <th id="ah-lang">언어</th>
-            <th id="ah-time">신청 일시</th>
+            <th id="ah-org">Company</th>
+            <th id="ah-region">Country Team</th>
+            <th id="ah-name">Name</th>
+            <th id="ah-lang">Lang</th>
+            <th id="ah-time">Registered At</th>
           </tr>
         </thead>
         <tbody id="admin-tbody">
-          <tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>
+          <tr class="loading-row"><td colspan="6">Loading...</td></tr>
         </tbody>
       </table>
     </div>
@@ -504,31 +288,36 @@
 </div>
 
 <script>
-// ── Supabase 설정 ──
+// ── Supabase ──
 const SUPABASE_URL = 'https://rtkywnlbdeysgggdyzmfv.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0a3l3bmxiZGV5c2dnZ2R5emZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTg5NzYsImV4cCI6MjA5NDk5NDk3Nn0.3kPR42vl075Uq1pDqf2SS4fwwbUPPRIGsw5rPkt1ALk';
 const TABLE = 'registrants';
 
-async function sbFetch(method, body) {
+// ── 웨비나 정보 ──
+// Zoom 링크 업데이트가 필요하면 아래 ZOOM_LINK만 수정하세요
+const ZOOM_LINK = 'https://zoom.us/j/TBD'; // ← 나중에 여기 업데이트
+const WEBINAR_TITLE = 'Global K-Wave Impact Study Sharing Session';
+const WEBINAR_START = '20260609T140000Z'; // 2026-06-09 23:00 KST = 14:00 UTC
+const WEBINAR_END   = '20260609T150000Z'; // 2026-06-10 00:00 KST = 15:00 UTC
+const WEBINAR_DESC  = 'Dear all,\\nWe would like to invite you to a sharing session on the findings from the "CJ Global K-Wave Strategy" study, conducted by the Future Strategy Office at CJ Holdings.\\n\\n■ Key Topics\\n- The influence and future growth potential of global K-Culture\\n- Global consumer perceptions and usage behaviors related to K-Food\\n\\nThe session will be conducted in English.';
+
+async function sbPost(body) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
-    method,
+    method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : '',
+      'Prefer': 'return=representation',
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: JSON.stringify(body),
   });
   return res;
 }
 
 async function sbSelect() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.asc`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-    }
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
   });
   if (!res.ok) throw new Error('fetch failed');
   return res.json();
@@ -536,97 +325,116 @@ async function sbSelect() {
 
 // ── 언어 ──
 const T = {
-  ko: {
-    title: '웨비나 참가 신청',
-    subtitle: '아래 정보를 입력하시면 신청이 완료됩니다.',
-    org: '소속', name: '이름', link: '초대 링크',
-    submit: '신청 완료',
-    done: '신청되셨습니다!',
-    doneSub: '참가 신청이 정상적으로 접수되었습니다. 감사합니다.',
-    reset: '다른 분 신청하기',
-    err_empty: '모든 항목을 입력해 주세요.',
-    err_server: '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
-    ph_org: '회사 / 기관명', ph_name: '성함을 입력하세요', ph_link: 'https://zoom.us/j/...',
-    count: (n) => `${n}명`,
-    ah: ['소속', '이름', '초대 링크', '언어', '신청 일시'],
-  },
   en: {
     title: 'Webinar Registration',
-    subtitle: 'Please fill in the information below to complete your registration.',
-    org: 'Organization', name: 'Name', link: 'Invite Link',
-    submit: 'Register Now',
+    subtitle: 'Register below to add this session to your Outlook calendar.',
+    siLabel: 'Session Details',
+    siContent: '📅 June 9, 2026 · 11:00 PM – 12:00 AM (KST)<br>🌐 Conducted in English',
+    org: 'Company', region: 'Country Team', name: 'Name',
+    regionHint: 'e.g. Korea Team, Japan Team, China Team',
+    submit: 'Add to Calendar',
     done: "You're registered!",
-    doneSub: 'Your registration has been received. Thank you!',
+    doneSub: 'Click below to download your calendar file and open it in Outlook.',
+    dlIcs: '⬇ Download Calendar File (.ics)',
     reset: 'Register another person',
     err_empty: 'Please fill in all fields.',
     err_server: 'Server error. Please try again.',
-    ph_org: 'Company / Institution', ph_name: 'Enter your name', ph_link: 'https://zoom.us/j/...',
+    ph_org: 'Company name', ph_region: 'e.g. Korea Team', ph_name: 'Your name',
     count: (n) => `${n} registered`,
-    ah: ['Organization', 'Name', 'Invite Link', 'Language', 'Registered At'],
+    ah: ['Company', 'Country Team', 'Name', 'Lang', 'Registered At'],
+  },
+  ko: {
+    title: '웨비나 참가 신청',
+    subtitle: '아래 정보를 입력하면 Outlook 캘린더 파일을 받으실 수 있습니다.',
+    siLabel: '세션 정보',
+    siContent: '📅 2026년 6월 9일 · 오후 11시 – 자정 (KST)<br>🌐 영어로 진행',
+    org: '회사명', region: '소속 팀', name: '이름',
+    regionHint: '예: Korea Team, Japan Team, China Team',
+    submit: '캘린더에 추가하기',
+    done: '신청되셨습니다!',
+    doneSub: '아래 버튼을 눌러 캘린더 파일을 다운로드하고 Outlook에서 열어주세요.',
+    dlIcs: '⬇ 캘린더 파일 다운로드 (.ics)',
+    reset: '다른 분 신청하기',
+    err_empty: '모든 항목을 입력해 주세요.',
+    err_server: '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+    ph_org: '회사명 입력', ph_region: '예: Korea Team', ph_name: '성함 입력',
+    count: (n) => `${n}명`,
+    ah: ['회사명', '소속 팀', '이름', '언어', '신청 일시'],
   },
   ja: {
     title: 'ウェビナー参加申込',
-    subtitle: '以下の情報を入力して申込を完了してください。',
-    org: '所属', name: 'お名前', link: '招待リンク',
-    submit: '申込完了',
+    subtitle: '以下を入力するとOutlookカレンダーファイルをダウンロードできます。',
+    siLabel: 'セッション情報',
+    siContent: '📅 2026年6月9日 · 午後11時 – 深夜12時 (KST)<br>🌐 英語で実施',
+    org: '会社名', region: '所属チーム', name: 'お名前',
+    regionHint: '例: Korea Team、Japan Team',
+    submit: 'カレンダーに追加',
     done: '申込が完了しました！',
-    doneSub: '参加申込を正常に受け付けました。ありがとうございます。',
+    doneSub: '下のボタンからカレンダーファイルをダウンロードし、Outlookで開いてください。',
+    dlIcs: '⬇ カレンダーファイルをダウンロード (.ics)',
     reset: '別の方を申し込む',
     err_empty: 'すべての項目を入力してください。',
-    err_server: 'サーバーエラーが発生しました。しばらくしてから再試行してください。',
-    ph_org: '会社名 / 機関名', ph_name: 'お名前を入力してください', ph_link: 'https://zoom.us/j/...',
+    err_server: 'サーバーエラーが発生しました。',
+    ph_org: '会社名を入力', ph_region: '例: Japan Team', ph_name: 'お名前を入力',
     count: (n) => `${n}名`,
-    ah: ['所属', 'お名前', '招待リンク', '言語', '申込日時'],
+    ah: ['会社名', '所属チーム', 'お名前', '言語', '申込日時'],
   },
   zh: {
     title: '网络研讨会报名',
-    subtitle: '请填写以下信息完成报名。',
-    org: '所属单位', name: '姓名', link: '邀请链接',
-    submit: '提交报名',
+    subtitle: '填写以下信息即可下载Outlook日历文件。',
+    siLabel: '会议详情',
+    siContent: '📅 2026年6月9日 · 晚上11时 – 午夜12时 (KST)<br>🌐 英语进行',
+    org: '公司名称', region: '所属团队', name: '姓名',
+    regionHint: '例如: Korea Team、China Team',
+    submit: '添加到日历',
     done: '报名成功！',
-    doneSub: '您的报名已成功提交，感谢参与。',
+    doneSub: '请点击下方按钮下载日历文件，并在Outlook中打开。',
+    dlIcs: '⬇ 下载日历文件 (.ics)',
     reset: '为其他人报名',
     err_empty: '请填写所有必填项。',
     err_server: '服务器错误，请稍后重试。',
-    ph_org: '公司 / 机构名称', ph_name: '请输入您的姓名', ph_link: 'https://zoom.us/j/...',
+    ph_org: '请输入公司名称', ph_region: '例如: China Team', ph_name: '请输入姓名',
     count: (n) => `${n}人`,
-    ah: ['所属单位', '姓名', '邀请链接', '语言', '报名时间'],
+    ah: ['公司名称', '所属团队', '姓名', '语言', '报名时间'],
   },
 };
 
 let lang = 'en';
 let registrants = [];
+let lastSubmit = {};
 
 function setLang(l) {
   lang = l;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
-  applyLang();
+  const btn = document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`);
+  if (btn) btn.classList.add('active');
+  if (isExpired) { updateExpiredLang(); } else { applyLang(); }
 }
 
 function applyLang() {
   const t = T[lang];
   document.getElementById('t-title').textContent = t.title;
   document.getElementById('t-subtitle').textContent = t.subtitle;
+  document.getElementById('t-si-label').textContent = t.siLabel;
+  document.getElementById('t-si-content').innerHTML = t.siContent;
   document.getElementById('t-org').innerHTML = t.org + ' <span class="req">*</span>';
+  document.getElementById('t-region').innerHTML = t.region + ' <span class="req">*</span>';
   document.getElementById('t-name').innerHTML = t.name + ' <span class="req">*</span>';
-  document.getElementById('t-link').innerHTML = t.link + ' <span class="req">*</span>';
+  document.getElementById('t-region-hint').textContent = t.regionHint;
   document.getElementById('btn-text').textContent = t.submit;
   document.getElementById('t-done').textContent = t.done;
   document.getElementById('t-done-sub').textContent = t.doneSub;
+  document.getElementById('dl-ics-btn').textContent = t.dlIcs;
   document.getElementById('t-reset').textContent = t.reset;
   document.getElementById('org').placeholder = t.ph_org;
+  document.getElementById('region').placeholder = t.ph_region;
   document.getElementById('name').placeholder = t.ph_name;
-  document.getElementById('link').placeholder = t.ph_link;
   document.title = t.title;
-
-  // Admin headers
   const ah = t.ah;
-  ['ah-org','ah-name','ah-link','ah-lang','ah-time'].forEach((id, i) => {
+  ['ah-org','ah-region','ah-name','ah-lang','ah-time'].forEach((id, i) => {
     const el = document.getElementById(id);
     if (el) el.textContent = ah[i];
   });
-
   if (registrants.length > 0) renderTable();
   updateCount();
 }
@@ -634,31 +442,30 @@ function applyLang() {
 // ── 폼 제출 ──
 async function submitForm() {
   const org = document.getElementById('org').value.trim();
+  const region = document.getElementById('region').value.trim();
   const name = document.getElementById('name').value.trim();
-  const link = document.getElementById('link').value.trim();
   const err = document.getElementById('err-msg');
   const t = T[lang];
 
-  if (!org || !name || !link) {
+  if (!org || !region || !name) {
     err.textContent = t.err_empty;
     err.style.display = 'block';
     return;
   }
   err.style.display = 'none';
 
-  // Loading state
   const btn = document.getElementById('submit-btn');
   document.getElementById('btn-text').style.display = 'none';
   document.getElementById('btn-spinner').style.display = 'block';
   btn.disabled = true;
 
   try {
-    const res = await sbFetch('POST', { org, name, link, lang: lang.toUpperCase() });
+    const res = await sbPost({ org, region, name, lang: lang.toUpperCase() });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.message || 'error');
     }
-    // 성공
+    lastSubmit = { org, region, name };
     document.getElementById('form-body').style.display = 'none';
     document.getElementById('success-body').style.display = 'flex';
   } catch (e) {
@@ -671,12 +478,50 @@ async function submitForm() {
   }
 }
 
+// ── ICS 다운로드 ──
+function downloadICS() {
+  const uid = 'kwave-' + Date.now() + '@cj.net';
+  const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+  const safeName = (lastSubmit.name || 'Attendee').replace(/[,\\n]/g, ' ');
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//CJ Holdings//K-Wave Webinar//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${now}`,
+    `DTSTART:${WEBINAR_START}`,
+    `DTEND:${WEBINAR_END}`,
+    `SUMMARY:${WEBINAR_TITLE}`,
+    `DESCRIPTION:${WEBINAR_DESC}`,
+    `LOCATION:${ZOOM_LINK}`,
+    `ORGANIZER;CN=CJ Holdings Future Strategy Office:mailto:jinkyung.sung@cj.net`,
+    `ATTENDEE;CN=${safeName}:mailto:unknown@cj.net`,
+    'STATUS:CONFIRMED',
+    'TRANSP:OPAQUE',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kwave_webinar_june9.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 function resetForm() {
   document.getElementById('org').value = '';
+  document.getElementById('region').value = '';
   document.getElementById('name').value = '';
-  document.getElementById('link').value = '';
   document.getElementById('form-body').style.display = 'block';
   document.getElementById('success-body').style.display = 'none';
+  lastSubmit = {};
 }
 
 // ── 관리자 ──
@@ -687,32 +532,31 @@ function updateCount() {
 
 async function loadRegistrants() {
   const tbody = document.getElementById('admin-tbody');
-  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>';
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Loading...</td></tr>';
   try {
     registrants = await sbSelect();
     renderTable();
     updateCount();
   } catch (e) {
-    tbody.innerHTML = `<tr class="loading-row"><td colspan="6">⚠ 데이터를 불러오지 못했습니다: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="6">⚠ Failed to load: ${e.message}</td></tr>`;
   }
 }
 
 function renderTable() {
   const tbody = document.getElementById('admin-tbody');
   if (!registrants.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="no-data">신청자가 없습니다.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No registrants yet.</td></tr>';
     return;
   }
   tbody.innerHTML = registrants.map((r, i) => {
     const dt = r.created_at ? new Date(r.created_at).toLocaleString('ko-KR', {
       month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
     }) : '-';
-    const shortLink = r.link && r.link.length > 35 ? r.link.slice(0, 35) + '…' : (r.link || '-');
     return `<tr>
       <td style="color:var(--ink3);width:40px">${i + 1}</td>
       <td><strong>${esc(r.org)}</strong></td>
+      <td>${esc(r.region || '-')}</td>
       <td>${esc(r.name)}</td>
-      <td class="link-cell"><a href="${esc(r.link)}" target="_blank" style="color:var(--accent)">${esc(shortLink)}</a></td>
       <td><span class="lang-pill">${esc(r.lang || '-')}</span></td>
       <td class="time-cell">${dt}</td>
     </tr>`;
@@ -720,25 +564,24 @@ function renderTable() {
 }
 
 function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function downloadExcel() {
-  if (!registrants.length) { alert('데이터가 없습니다.'); return; }
+  if (!registrants.length) { alert('No data.'); return; }
   const t = T[lang];
-  const headers = ['#', t.ah[0], t.ah[1], t.ah[2], t.ah[3], t.ah[4]];
+  const h = ['#', t.ah[0], t.ah[1], t.ah[2], t.ah[3], t.ah[4]];
   const rows = registrants.map((r, i) => [
-    i + 1, r.org, r.name, r.link, r.lang,
+    i+1, r.org, r.region||'', r.name, r.lang,
     r.created_at ? new Date(r.created_at).toLocaleString('ko-KR') : ''
   ]);
-  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  ws['!cols'] = [{wch:4},{wch:24},{wch:14},{wch:45},{wch:6},{wch:20}];
+  const ws = XLSX.utils.aoa_to_sheet([h, ...rows]);
+  ws['!cols'] = [{wch:4},{wch:22},{wch:18},{wch:14},{wch:6},{wch:20}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Registrants');
-  XLSX.writeFile(wb, `webinar_registrants_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb, `kwave_registrants_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
-// ── 관리자 모드 감지 ──
 function checkAdminMode() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('admin') === 'true') {
@@ -748,16 +591,14 @@ function checkAdminMode() {
   }
 }
 
-// ── 마감 시간 체크 ──
+// ── 마감 ──
 const DEADLINE = new Date('2026-06-05T17:00:00+09:00');
-
 const EXPIRED = {
-  ko: { title: '신청 기간이 만료되었습니다', msg: '웨비나 신청 기간이 만료되었습니다.', contact: '관련 문의' },
   en: { title: 'Registration Closed', msg: 'The webinar registration period has ended.', contact: 'For inquiries' },
+  ko: { title: '신청 기간이 만료되었습니다', msg: '웨비나 신청 기간이 만료되었습니다.', contact: '관련 문의' },
   ja: { title: '申込期間が終了しました', msg: 'ウェビナーの申込期間が終了しました。', contact: 'お問い合わせ' },
   zh: { title: '报名已截止', msg: '网络研讨会报名时间已结束。', contact: '相关咨询' },
 };
-
 let isExpired = false;
 
 function showExpired() {
@@ -784,16 +625,6 @@ function updateExpiredLang() {
   if (el('exp-msg')) el('exp-msg').textContent = t.msg;
   if (el('exp-contact')) el('exp-contact').textContent = t.contact;
 }
-
-// setLang 오버라이드: 만료 후 언어 전환도 반영
-const _setLang = setLang;
-window.setLang = function(l) {
-  lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`);
-  if (btn) btn.classList.add('active');
-  if (isExpired) { updateExpiredLang(); } else { applyLang(); }
-};
 
 // ── 초기화 ──
 applyLang();
