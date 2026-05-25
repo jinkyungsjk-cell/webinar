@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>웨비나 참가 신청 / Webinar Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a2e;
+    --ink2: #4a4a6a;
+    --ink3: #8888aa;
+    --paper: #f7f6f2;
+    --card: #ffffff;
+    --accent: #2d5a8e;
+    --accent2: #e8b84b;
+    --border: rgba(26,26,46,0.1);
+    --border2: rgba(26,26,46,0.06);
+    --success: #1a7a4a;
+    --success-bg: #edf7f1;
+    --danger: #c0392b;
+    --danger-bg: #fdf0ee;
+    --radius: 16px;
+    --shadow: 0 2px 24px rgba(26,26,46,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem 4rem;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent2);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* ── Language switcher ── */
+  .lang-bar {
+    display: flex;
+    gap: 4px;
+  }
+
+  .lang-btn {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--ink3);
+    cursor: pointer;
+    transition: all .18s ease;
+  }
+
+  .lang-btn:hover { color: var(--ink); border-color: var(--ink2); }
+  .lang-btn.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ── Main card ── */
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border2);
+    overflow: hidden;
+  }
+
+  .card-top {
+    padding: 2.25rem 2.25rem 2rem;
+    border-bottom: 1px solid var(--border2);
+    position: relative;
+  }
+
+  .card-top::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+  }
+
+  .card-top h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .card-top p {
+    font-size: 13.5px;
+    color: var(--ink2);
+    line-height: 1.65;
+  }
+
+  /* ── Form ── */
+  .card-body { padding: 2rem 2.25rem; }
+
+  .field { margin-bottom: 1.35rem; }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 8px;
+  }
+
+  .req { color: var(--accent2); margin-left: 2px; }
+
+  .field input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+  }
+
+  .field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45,90,142,0.1);
+    background: #fff;
+  }
+
+  .field input::placeholder { color: var(--ink3); }
+
+  .err-box {
+    display: none;
+    font-size: 13px;
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    letter-spacing: 0.05em;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .18s, transform .1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn:hover { background: var(--accent); }
+  .submit-btn:active { transform: scale(0.99); }
+  .submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+  .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Success ── */
+  .success-panel {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .success-icon {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: var(--success-bg);
+    color: var(--success);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin-bottom: 1.5rem;
+    animation: pop .4s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-panel h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .success-panel p {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.65;
+    max-width: 300px;
+  }
+
+  .reset-btn {
+    margin-top: 1.75rem;
+    font-size: 13px;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .18s;
+  }
+
+  .reset-btn:hover { border-color: var(--accent); background: rgba(45,90,142,0.05); }
+
+  /* ── Admin panel ── */
+  #admin-panel {
+    display: none;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .admin-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--ink);
+  }
+
+  .admin-actions { display: flex; gap: 8px; align-items: center; }
+
+  .count-badge {
+    font-size: 12px;
+    background: var(--ink);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .dl-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 18px;
+    background: var(--accent2);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity .18s;
+  }
+
+  .dl-btn:hover { opacity: .85; }
+
+  .refresh-btn {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 14px;
+    background: transparent;
+    color: var(--ink2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .18s;
+  }
+
+  .refresh-btn:hover { border-color: var(--ink2); color: var(--ink); }
+
+  .admin-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border2);
+    overflow: hidden;
+  }
+
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border2);
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(45,90,142,0.03); }
+
+  .lang-pill {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--paper);
+    color: var(--ink2);
+    border: 1px solid var(--border);
+  }
+
+  .link-cell {
+    color: var(--accent);
+    font-size: 12px;
+    word-break: break-all;
+    max-width: 220px;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--ink3);
+    font-size: 14px;
+  }
+
+  .loading-row td {
+    text-align: center;
+    color: var(--ink3);
+    padding: 2.5rem;
+    font-size: 14px;
+  }
+
+  .time-cell { color: var(--ink3); font-size: 12px; white-space: nowrap; }
+
+  /* ── Form/Admin toggle ── */
+  .main-wrap { width: 100%; max-width: 560px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    body { padding: 1.5rem .75rem 3rem; }
+    .card-top, .card-body { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .card-top h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-dot"></span>
+    Webinar
+  </div>
+  <nav class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('en')">English</button>
+    <button class="lang-btn" onclick="setLang('ko')">한국어</button>
+    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    <button class="lang-btn" onclick="setLang('zh')">中文</button>
+  </nav>
+</header>
+
+<!-- ── 신청 폼 ── -->
+<div class="main-wrap" id="form-wrap">
+  <div class="card">
+    <div class="card-top">
+      <h1 id="t-title">웨비나 참가 신청</h1>
+      <p id="t-subtitle">아래 정보를 입력하시면 신청이 완료됩니다.</p>
+    </div>
+
+    <div id="form-body" class="card-body">
+      <div class="field">
+        <label id="t-org">소속 <span class="req">*</span></label>
+        <input type="text" id="org" autocomplete="organization" />
+      </div>
+      <div class="field">
+        <label id="t-name">이름 <span class="req">*</span></label>
+        <input type="text" id="name" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label id="t-link">초대 링크 <span class="req">*</span></label>
+        <input type="url" id="link" />
+      </div>
+      <div class="err-box" id="err-msg"></div>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+        <span id="btn-text">신청 완료</span>
+        <div class="spinner" id="btn-spinner"></div>
+      </button>
+    </div>
+
+    <div id="success-body" class="success-panel">
+      <div class="success-icon">✓</div>
+      <h2 id="t-done">신청되셨습니다!</h2>
+      <p id="t-done-sub">참가 신청이 정상적으로 접수되었습니다. 감사합니다.</p>
+      <button class="reset-btn" id="t-reset" onclick="resetForm()">다른 분 신청하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 관리자 패널 ── -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <h2 class="admin-title">신청자 명단</h2>
+    <div class="admin-actions">
+      <span class="count-badge" id="admin-count">0명</span>
+      <button class="refresh-btn" onclick="loadRegistrants()">↻ 새로고침</button>
+      <button class="dl-btn" onclick="downloadExcel()">⬇ 엑셀 다운로드</button>
+    </div>
+  </div>
+  <div class="admin-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th id="ah-org">소속</th>
+            <th id="ah-name">이름</th>
+            <th id="ah-link">초대 링크</th>
+            <th id="ah-lang">언어</th>
+            <th id="ah-time">신청 일시</th>
+          </tr>
+        </thead>
+        <tbody id="admin-tbody">
+          <tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Supabase 설정 ──
+const SUPABASE_URL = 'https://rtkywnlbdeysgggdyzmfv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0a3l3bmxiZGV5c2dnZ2R5emZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MTg5NzYsImV4cCI6MjA5NDk5NDk3Nn0.3kPR42vl075Uq1pDqf2SS4fwwbUPPRIGsw5rPkt1ALk';
+const TABLE = 'registrants';
+
+async function sbFetch(method, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : '',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return res;
+}
+
+async function sbSelect() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.asc`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+    }
+  });
+  if (!res.ok) throw new Error('fetch failed');
+  return res.json();
+}
+
+// ── 언어 ──
+const T = {
+  ko: {
+    title: '웨비나 참가 신청',
+    subtitle: '아래 정보를 입력하시면 신청이 완료됩니다.',
+    org: '소속', name: '이름', link: '초대 링크',
+    submit: '신청 완료',
+    done: '신청되셨습니다!',
+    doneSub: '참가 신청이 정상적으로 접수되었습니다. 감사합니다.',
+    reset: '다른 분 신청하기',
+    err_empty: '모든 항목을 입력해 주세요.',
+    err_server: '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+    ph_org: '회사 / 기관명', ph_name: '성함을 입력하세요', ph_link: 'https://zoom.us/j/...',
+    count: (n) => `${n}명`,
+    ah: ['소속', '이름', '초대 링크', '언어', '신청 일시'],
+  },
+  en: {
+    title: 'Webinar Registration',
+    subtitle: 'Please fill in the information below to complete your registration.',
+    org: 'Organization', name: 'Name', link: 'Invite Link',
+    submit: 'Register Now',
+    done: "You're registered!",
+    doneSub: 'Your registration has been received. Thank you!',
+    reset: 'Register another person',
+    err_empty: 'Please fill in all fields.',
+    err_server: 'Server error. Please try again.',
+    ph_org: 'Company / Institution', ph_name: 'Enter your name', ph_link: 'https://zoom.us/j/...',
+    count: (n) => `${n} registered`,
+    ah: ['Organization', 'Name', 'Invite Link', 'Language', 'Registered At'],
+  },
+  ja: {
+    title: 'ウェビナー参加申込',
+    subtitle: '以下の情報を入力して申込を完了してください。',
+    org: '所属', name: 'お名前', link: '招待リンク',
+    submit: '申込完了',
+    done: '申込が完了しました！',
+    doneSub: '参加申込を正常に受け付けました。ありがとうございます。',
+    reset: '別の方を申し込む',
+    err_empty: 'すべての項目を入力してください。',
+    err_server: 'サーバーエラーが発生しました。しばらくしてから再試行してください。',
+    ph_org: '会社名 / 機関名', ph_name: 'お名前を入力してください', ph_link: 'https://zoom.us/j/...',
+    count: (n) => `${n}名`,
+    ah: ['所属', 'お名前', '招待リンク', '言語', '申込日時'],
+  },
+  zh: {
+    title: '网络研讨会报名',
+    subtitle: '请填写以下信息完成报名。',
+    org: '所属单位', name: '姓名', link: '邀请链接',
+    submit: '提交报名',
+    done: '报名成功！',
+    doneSub: '您的报名已成功提交，感谢参与。',
+    reset: '为其他人报名',
+    err_empty: '请填写所有必填项。',
+    err_server: '服务器错误，请稍后重试。',
+    ph_org: '公司 / 机构名称', ph_name: '请输入您的姓名', ph_link: 'https://zoom.us/j/...',
+    count: (n) => `${n}人`,
+    ah: ['所属单位', '姓名', '邀请链接', '语言', '报名时间'],
+  },
+};
+
+let lang = 'en';
+let registrants = [];
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  applyLang();
+}
+
+function applyLang() {
+  const t = T[lang];
+  document.getElementById('t-title').textContent = t.title;
+  document.getElementById('t-subtitle').textContent = t.subtitle;
+  document.getElementById('t-org').innerHTML = t.org + ' <span class="req">*</span>';
+  document.getElementById('t-name').innerHTML = t.name + ' <span class="req">*</span>';
+  document.getElementById('t-link').innerHTML = t.link + ' <span class="req">*</span>';
+  document.getElementById('btn-text').textContent = t.submit;
+  document.getElementById('t-done').textContent = t.done;
+  document.getElementById('t-done-sub').textContent = t.doneSub;
+  document.getElementById('t-reset').textContent = t.reset;
+  document.getElementById('org').placeholder = t.ph_org;
+  document.getElementById('name').placeholder = t.ph_name;
+  document.getElementById('link').placeholder = t.ph_link;
+  document.title = t.title;
+
+  // Admin headers
+  const ah = t.ah;
+  ['ah-org','ah-name','ah-link','ah-lang','ah-time'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = ah[i];
+  });
+
+  if (registrants.length > 0) renderTable();
+  updateCount();
+}
+
+// ── 폼 제출 ──
+async function submitForm() {
+  const org = document.getElementById('org').value.trim();
+  const name = document.getElementById('name').value.trim();
+  const link = document.getElementById('link').value.trim();
+  const err = document.getElementById('err-msg');
+  const t = T[lang];
+
+  if (!org || !name || !link) {
+    err.textContent = t.err_empty;
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+
+  // Loading state
+  const btn = document.getElementById('submit-btn');
+  document.getElementById('btn-text').style.display = 'none';
+  document.getElementById('btn-spinner').style.display = 'block';
+  btn.disabled = true;
+
+  try {
+    const res = await sbFetch('POST', { org, name, link, lang: lang.toUpperCase() });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.message || 'error');
+    }
+    // 성공
+    document.getElementById('form-body').style.display = 'none';
+    document.getElementById('success-body').style.display = 'flex';
+  } catch (e) {
+    err.textContent = t.err_server + (e.message ? ` (${e.message})` : '');
+    err.style.display = 'block';
+  } finally {
+    document.getElementById('btn-text').style.display = 'block';
+    document.getElementById('btn-spinner').style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+function resetForm() {
+  document.getElementById('org').value = '';
+  document.getElementById('name').value = '';
+  document.getElementById('link').value = '';
+  document.getElementById('form-body').style.display = 'block';
+  document.getElementById('success-body').style.display = 'none';
+}
+
+// ── 관리자 ──
+function updateCount() {
+  const el = document.getElementById('admin-count');
+  if (el) el.textContent = T[lang].count(registrants.length);
+}
+
+async function loadRegistrants() {
+  const tbody = document.getElementById('admin-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>';
+  try {
+    registrants = await sbSelect();
+    renderTable();
+    updateCount();
+  } catch (e) {
+    tbody.innerHTML = `<tr class="loading-row"><td colspan="6">⚠ 데이터를 불러오지 못했습니다: ${e.message}</td></tr>`;
+  }
+}
+
+function renderTable() {
+  const tbody = document.getElementById('admin-tbody');
+  if (!registrants.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="no-data">신청자가 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = registrants.map((r, i) => {
+    const dt = r.created_at ? new Date(r.created_at).toLocaleString('ko-KR', {
+      month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+    }) : '-';
+    const shortLink = r.link && r.link.length > 35 ? r.link.slice(0, 35) + '…' : (r.link || '-');
+    return `<tr>
+      <td style="color:var(--ink3);width:40px">${i + 1}</td>
+      <td><strong>${esc(r.org)}</strong></td>
+      <td>${esc(r.name)}</td>
+      <td class="link-cell"><a href="${esc(r.link)}" target="_blank" style="color:var(--accent)">${esc(shortLink)}</a></td>
+      <td><span class="lang-pill">${esc(r.lang || '-')}</span></td>
+      <td class="time-cell">${dt}</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function downloadExcel() {
+  if (!registrants.length) { alert('데이터가 없습니다.'); return; }
+  const t = T[lang];
+  const headers = ['#', t.ah[0], t.ah[1], t.ah[2], t.ah[3], t.ah[4]];
+  const rows = registrants.map((r, i) => [
+    i + 1, r.org, r.name, r.link, r.lang,
+    r.created_at ? new Date(r.created_at).toLocaleString('ko-KR') : ''
+  ]);
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws['!cols'] = [{wch:4},{wch:24},{wch:14},{wch:45},{wch:6},{wch:20}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Registrants');
+  XLSX.writeFile(wb, `webinar_registrants_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ── 관리자 모드 감지 ──
+function checkAdminMode() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('admin') === 'true') {
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadRegistrants();
+  }
+}
+
+// ── 마감 시간 체크 ──
+const DEADLINE = new Date('2025-06-05T17:00:00+09:00');
+
+const EXPIRED = {
+  ko: { title: '신청 기간이 만료되었습니다', msg: '웨비나 신청 기간이 만료되었습니다.', contact: '관련 문의' },
+  en: { title: 'Registration Closed', msg: 'The webinar registration period has ended.', contact: 'For inquiries' },
+  ja: { title: '申込期間が終了しました', msg: 'ウェビナーの申込期間が終了しました。', contact: 'お問い合わせ' },
+  zh: { title: '报名已截止', msg: '网络研讨会报名时间已结束。', contact: '相关咨询' },
+};
+
+let isExpired = false;
+
+function showExpired() {
+  const t = EXPIRED[lang];
+  document.getElementById('form-wrap').innerHTML = `
+    <div class="card">
+      <div class="card-top">
+        <h1 id="exp-title">${t.title}</h1>
+      </div>
+      <div class="card-body" style="text-align:center;padding:2.5rem 2rem;">
+        <div style="font-size:48px;margin-bottom:1.25rem;">🔒</div>
+        <p id="exp-msg" style="font-size:15px;color:var(--ink2);line-height:1.7;margin-bottom:1.25rem;">${t.msg}</p>
+        <p id="exp-contact" style="font-size:13px;color:var(--ink3);margin-bottom:.75rem;">${t.contact}</p>
+        <a href="mailto:jinkyung.sung@cj.net" style="display:block;color:var(--accent);font-size:14px;margin-bottom:6px;">jinkyung.sung@cj.net</a>
+        <a href="mailto:hyoji.choi1@cj.net" style="display:block;color:var(--accent);font-size:14px;">hyoji.choi1@cj.net</a>
+      </div>
+    </div>`;
+}
+
+function updateExpiredLang() {
+  const t = EXPIRED[lang];
+  const el = (id) => document.getElementById(id);
+  if (el('exp-title')) el('exp-title').textContent = t.title;
+  if (el('exp-msg')) el('exp-msg').textContent = t.msg;
+  if (el('exp-contact')) el('exp-contact').textContent = t.contact;
+}
+
+// setLang 오버라이드: 만료 후 언어 전환도 반영
+const _setLang = setLang;
+window.setLang = function(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`);
+  if (btn) btn.classList.add('active');
+  if (isExpired) { updateExpiredLang(); } else { applyLang(); }
+};
+
+// ── 초기화 ──
+applyLang();
+checkAdminMode();
+if (new Date() > DEADLINE) {
+  isExpired = true;
+  showExpired();
+}
+</script>
+</body>
+</html>
